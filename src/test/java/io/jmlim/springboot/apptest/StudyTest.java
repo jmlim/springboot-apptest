@@ -1,41 +1,28 @@
 package io.jmlim.springboot.apptest;
 
 import org.junit.jupiter.api.*;
-
-import java.time.Duration;
+import org.junit.jupiter.api.condition.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-import static org.junit.jupiter.api.Assumptions.assumingThat;
 
 // 테스트 이름 전략 짜기
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class StudyTest {
 
     @Test
-    @DisplayName("스터디 만들기 \uD83D\uDE31")
+    @DisplayName("스터디 만들기 \uD83D\uDE31 (윈도우, 리눅스 실행)")
+    // @EnabledOnOs({OS.WINDOWS, OS.LINUX})
+    @EnabledOnJre({JRE.JAVA_8, JRE.JAVA_9, JRE.JAVA_10, JRE.JAVA_11})
     void create_new_study() {
-        // TEST_ENV 환경변수가 local 인 경우에만 통과
-        // - 주의 : 인텔리제이에서는 처음 실행 시 환경변수를 로드한걸 사용하므로 만약 환경변수가 변경되었다면 재시작을 해야 정상적으로 읽어온다.
-        String testEnv = System.getenv("TEST_ENV");
-        System.out.println(testEnv);
-        // assumeTrue("LOCAL".equalsIgnoreCase(testEnv));
-
-        assumingThat("LOCAL".equalsIgnoreCase(testEnv), () -> {
-            System.out.println("local");
-            Study actual = new Study(10);
-            assertThat(actual.getLimit()).isGreaterThan(0);
-        });
-
-        assumingThat("jmlim".equalsIgnoreCase(testEnv), () -> {
-            System.out.println("jmlim");
-            Study actual = new Study(10);
-            assertThat(actual.getLimit()).isGreaterThan(0);
-        });
+        Study actual = new Study(100);
+        assertThat(actual.getLimit()).isGreaterThan(0);
+        System.out.println("create_new_study");
     }
 
     @Test
+    @DisplayName("스터디 만들기 \uD83D\uDE31 (MAC은 실행안함)")
+    @DisabledOnOs(OS.MAC)
+    @EnabledOnJre({JRE.OTHER})
     void create1_new_study_again() {
         System.out.println("create1");
     }
