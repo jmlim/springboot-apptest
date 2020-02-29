@@ -2,6 +2,8 @@ package io.jmlim.springboot.apptest;
 
 import org.junit.jupiter.api.*;
 
+import java.time.Duration;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 // 테스트 이름 전략 짜기
@@ -11,9 +13,22 @@ class StudyTest {
     @Test
     @DisplayName("스터디 만들기 \uD83D\uDE31")
     void create_new_study() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new Study(-10));
-        String message = exception.getMessage();
-        assertEquals("limit은 0보다 커야 합니다.", exception.getMessage());
+        // 10초안에 해당 부분이 실행이 되지 않는다면 에러를 발생 시킴.
+        assertTimeout(Duration.ofSeconds(10), () -> new Study(10));
+
+        // 0.1초안에 해당 부분이 실행 되지 않는다면 에러를 발생 시킴 (아래는 실패할 것임)
+        assertTimeout(Duration.ofMillis(100), () -> {
+            new Study(10);
+            Thread.sleep(300);
+        });
+
+        // 아래 메소드 사용 시 더이상 기다리지 않음
+        // 주의해서 사용. 코드별로를 별도의 쓰레드에서 사용하므로..
+        assertTimeoutPreemptively(Duration.ofMillis(100), () -> {
+            new Study(10);
+            Thread.sleep(300);
+        });
+        // TODO ThreadLocal
     }
 
     @Test
