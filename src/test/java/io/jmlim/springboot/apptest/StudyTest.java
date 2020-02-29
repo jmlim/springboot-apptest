@@ -1,6 +1,7 @@
 package io.jmlim.springboot.apptest;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.AggregateWith;
@@ -15,9 +16,8 @@ import org.junit.jupiter.params.provider.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-// 테스트 이름 전략 짜기
+@ExtendWith(FindSlowTestExtension.class) // 선언적인 등록하기.
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS) // 클래스마다 인스턴스 생성. (메소드 하나가 인스턴스 하나가 아니므로 클래스 변수 공유)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class) // Order 어노테이션으로 순서를 정함.
 class StudyTest {
     int value = 0;
@@ -32,10 +32,12 @@ class StudyTest {
     }
 
     @Order(1)
-    @SlowTest
+    // @SlowTest
+    @Test
     @DisplayName("스터디 만들기 \uD83D\uDE31 slow")
     @Disabled // junit-platform.properties 파일에 junit.jupiter.conditions.deactivate = org.junit.*DisabledCondition 설정되어있어 무시됨
-    void create1_new_study_again() {
+    void create1_new_study_again() throws InterruptedException {
+        Thread.sleep(1005L);
         System.out.println(this);
         System.out.println(++value);
     }
