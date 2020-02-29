@@ -17,10 +17,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // 테스트 이름 전략 짜기
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS) // 클래스마다 인스턴스 생성. (메소드 하나가 인스턴스 하나가 아니므로 클래스 변수 공유)
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS) // 클래스마다 인스턴스 생성. (메소드 하나가 인스턴스 하나가 아니므로 클래스 변수 공유)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class) // Order 어노테이션으로 순서를 정함.
 class StudyTest {
     int value = 0;
 
+    @Order(2)
     @FastTest
     @DisplayName("스터디 만들기 \uD83D\uDE31 fast")
     void create_new_study() {
@@ -29,6 +31,7 @@ class StudyTest {
         System.out.println("create_new_study : " + (++value));
     }
 
+    @Order(1)
     @SlowTest
     @DisplayName("스터디 만들기 \uD83D\uDE31 slow")
     void create1_new_study_again() {
@@ -36,6 +39,7 @@ class StudyTest {
         System.out.println(++value);
     }
 
+    @Order(3)
     @DisplayName("스터디 만들기 리핏테스트")
     @RepeatedTest(value = 10, name = "{displayName}, {currentRepetition} / {totalRepetitions}")
     void repeatTest(RepetitionInfo repetitionInfo) {
@@ -43,6 +47,7 @@ class StudyTest {
         System.out.println("test" + repetitionInfo.getCurrentRepetition() + " / " + repetitionInfo.getTotalRepetitions());
     }
 
+    @Order(4)
     @DisplayName("스터디 만들기 ParameterizedTest String")
     @ParameterizedTest(name = "{index} {displayName} message={0}")
     @ValueSource(strings = {"날씨가","많이","추워지고","있네요."})
@@ -53,6 +58,7 @@ class StudyTest {
         System.out.println(message);
     }
 
+    @Order(5)
     @DisplayName("스터디 만들기 ParameterizedTest Integer")
     @ParameterizedTest(name = "{index} {displayName} message={0}")
     @ValueSource(ints = {10, 20, 40})
@@ -60,6 +66,7 @@ class StudyTest {
         System.out.println(limit);
     }
 
+    @Order(6)
     @DisplayName("스터디 만들기 ParameterizedTest Study object (use StudyConverter)")
     @ParameterizedTest(name = "{index} {displayName} message={0}")
     @ValueSource(ints = {10, 20, 40}) // 이경우는 숫자를 스터디 타입으로 받고자 하는것이기 때문에 컨버터를 만들어줘야 한다.
@@ -74,6 +81,7 @@ class StudyTest {
         }
     }
 
+    @Order(7)
     @DisplayName("스터디 만들기 ParameterizedTest Csv")
     @ParameterizedTest(name = "{index} {displayName} message={0}")
     @CsvSource({"10, '자바 스터디'", "20, '스프링'"})
@@ -82,6 +90,7 @@ class StudyTest {
         System.out.println(study);
     }
 
+    @Order(8)
     @DisplayName("스터디 만들기 ParameterizedTest Csv (use ArgumentsAccessor)")
     @ParameterizedTest(name = "{index} {displayName} message={0}")
     @CsvSource({"10, '자바 스터디'", "20, '스프링'"})
@@ -90,6 +99,7 @@ class StudyTest {
         System.out.println(study);
     }
 
+    @Order(9)
     @DisplayName("스터디 만들기 ParameterizedTest Csv (use StudyAggregator)")
     @ParameterizedTest(name = "{index} {displayName} message={0}")
     @CsvSource({"10, '자바 스터디'", "20, '스프링'"})
