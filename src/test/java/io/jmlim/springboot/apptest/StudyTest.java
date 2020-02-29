@@ -2,6 +2,8 @@ package io.jmlim.springboot.apptest;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,6 +22,20 @@ class StudyTest {
     @DisplayName("스터디 만들기 \uD83D\uDE31 slow")
     void create1_new_study_again() {
         System.out.println("create1");
+    }
+
+    @DisplayName("스터디 만들기 리핏테스트")
+    @RepeatedTest(value = 10, name = "{displayName}, {currentRepetition} / {totalRepetitions}")
+    void repeatTest(RepetitionInfo repetitionInfo) {
+        // RepetitionInfo을 통해 반복된 정보들을 알 수 있다.
+        System.out.println("test" + repetitionInfo.getCurrentRepetition() +" / " + repetitionInfo.getTotalRepetitions());
+    }
+
+    @DisplayName("스터디 만들기 ParameterizedTest")
+    @ParameterizedTest(name = "{index} {displayName} message={0}")
+    @ValueSource(strings = {"날씨가","많이","추워지고","있네요."})
+    void parameterizedTest(String message) {
+        System.out.println(message);
     }
 
     //반드시 스태틱 void 로 작성.
