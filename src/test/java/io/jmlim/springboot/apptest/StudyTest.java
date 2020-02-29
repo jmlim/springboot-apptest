@@ -2,7 +2,9 @@ package io.jmlim.springboot.apptest;
 
 import org.junit.jupiter.api.*;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.function.Supplier;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 // 테스트 이름 전략 짜기
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -11,12 +13,26 @@ class StudyTest {
     @Test
     @DisplayName("스터디 만들기 \uD83D\uDE31")
     void create_new_study() {
-        Study study = new Study();
+        Study study = new Study(-10);
         assertNotNull(study);
-        System.out.println("create");
+        //  assertEquals(StudyStatus.DRAFT, study.getStatus(), "스터디를 처음 만들면 상태값이 DRAFT여야 한다.");
+        //  assertEquals(StudyStatus.DRAFT, study.getStatus(), () -> "스터디를 처음 만들면 상태값이 DRAFT여야 한다.");
+        // 풀어보기
+        assertEquals(StudyStatus.DRAFT, study.getStatus(), new Supplier<String>() {
+            /**
+             * Gets a result.
+             *
+             * @return a result
+             */
+            @Override
+            public String get() {
+                return "스터디를 처음 만들면 DRAFT 상태여야 한다.";
+            }
+        });
+//        assertTrue(1 < 2);
+        assertTrue(study.getLimit() > 0, "스터디 최대 참석 가능 인원은 0보다 커야한다.");
     }
 
-    // 테스트를 실행하지 않기 위함.
     @Test
     void create1_new_study_again() {
         System.out.println("create1");
