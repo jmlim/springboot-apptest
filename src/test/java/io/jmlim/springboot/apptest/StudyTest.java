@@ -1,7 +1,7 @@
 package io.jmlim.springboot.apptest;
 
+import io.jmlim.springboot.apptest.domain.Study;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,7 +32,7 @@ class StudyTest {
     @DisplayName("스터디 만들기 \uD83D\uDE31 fast")
     void create_new_study() {
         Study actual = new Study(100);
-        assertThat(actual.getLimit()).isGreaterThan(0);
+        assertThat(actual.getLimitCount()).isGreaterThan(0);
         System.out.println("create_new_study : " + (++value));
     }
 
@@ -79,7 +79,7 @@ class StudyTest {
     @ParameterizedTest(name = "{index} {displayName} message={0}")
     @ValueSource(ints = {10, 20, 40}) // 이경우는 숫자를 스터디 타입으로 받고자 하는것이기 때문에 컨버터를 만들어줘야 한다.
     void parameterizedTest(@ConvertWith(StudyConverter.class) Study study) {
-        System.out.println(study.getLimit());
+        System.out.println(study.getLimitCount());
     }
     static class StudyConverter extends SimpleArgumentConverter {
         @Override
