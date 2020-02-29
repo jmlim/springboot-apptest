@@ -3,6 +3,7 @@ package io.jmlim.springboot.apptest;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
@@ -16,11 +17,15 @@ import org.junit.jupiter.params.provider.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(FindSlowTestExtension.class) // 선언적인 등록하기.
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class) // Order 어노테이션으로 순서를 정함.
 class StudyTest {
     int value = 0;
+
+    // 프로그래밍 등록
+    @RegisterExtension
+    static FindSlowTestExtension findSlowTestExtension
+            = new FindSlowTestExtension(1000L);
 
     @Order(2)
     @FastTest
