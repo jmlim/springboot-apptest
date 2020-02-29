@@ -8,19 +8,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 // 테스트 이름 전략 짜기
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class StudyTest {
-
-    @Test
+    @FastTest
     @DisplayName("스터디 만들기 \uD83D\uDE31 fast")
-    @Tag("fast")
     void create_new_study() {
         Study actual = new Study(100);
         assertThat(actual.getLimit()).isGreaterThan(0);
         System.out.println("create_new_study");
     }
 
-    @Test
+    @SlowTest
     @DisplayName("스터디 만들기 \uD83D\uDE31 slow")
-    @Tag("slow")
     void create1_new_study_again() {
         System.out.println("create1");
     }
