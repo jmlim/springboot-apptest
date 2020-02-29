@@ -11,15 +11,9 @@ class StudyTest {
     @Test
     @DisplayName("스터디 만들기 \uD83D\uDE31")
     void create_new_study() {
-        Study study = new Study(-10);
-
-        // assertAll 로 각각의 테스트를 한번에 실행 할 경우 그 안에 실패한 케이스가 여러개가 있을 경우 한번에 볼 수 있다.
-        // assertAll 사용하지 않을 시 중간에 테스트가 실패날 경우 그 이후에 실패한 케이스가 있다해도 확인할 수 없었다.
-        assertAll(
-                () -> assertNotNull(study),
-                () -> assertEquals(StudyStatus.DRAFT, study.getStatus(), () -> "스터디를 처음 만들면 상태값이 DRAFT여야 한다."),
-                () -> assertTrue(study.getLimit() > 0, "스터디 최대 참석 가능 인원은 0보다 커야한다.")
-        );
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new Study(-10));
+        String message = exception.getMessage();
+        assertEquals("limit은 0보다 커야 합니다.", exception.getMessage());
     }
 
     @Test
