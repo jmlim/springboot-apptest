@@ -1,7 +1,6 @@
 package io.jmlim.springboot.apptest;
 
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.condition.*;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.AggregateWith;
@@ -18,19 +17,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // 테스트 이름 전략 짜기
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS) // 클래스마다 인스턴스 생성. (메소드 하나가 인스턴스 하나가 아니므로 클래스 변수 공유)
 class StudyTest {
+    int value = 0;
+
     @FastTest
     @DisplayName("스터디 만들기 \uD83D\uDE31 fast")
     void create_new_study() {
         Study actual = new Study(100);
         assertThat(actual.getLimit()).isGreaterThan(0);
-        System.out.println("create_new_study");
+        System.out.println("create_new_study : " + (++value));
     }
 
     @SlowTest
     @DisplayName("스터디 만들기 \uD83D\uDE31 slow")
     void create1_new_study_again() {
-        System.out.println("create1");
+        System.out.println(this);
+        System.out.println(++value);
     }
 
     @DisplayName("스터디 만들기 리핏테스트")
