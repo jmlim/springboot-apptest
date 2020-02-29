@@ -10,10 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class StudyTest {
 
     @Test
-    @DisplayName("스터디 만들기 \uD83D\uDE31")
-    // @EnabledOnOs({OS.WINDOWS, OS.LINUX})
-    // @EnabledOnJre({JRE.JAVA_8, JRE.JAVA_9, JRE.JAVA_10, JRE.JAVA_11})
-    @EnabledIfEnvironmentVariable(named = "TEST_ENV", matches = "local") // 대소문자 구분
+    @DisplayName("스터디 만들기 \uD83D\uDE31 fast")
+    @Tag("fast")
     void create_new_study() {
         Study actual = new Study(100);
         assertThat(actual.getLimit()).isGreaterThan(0);
@@ -21,10 +19,8 @@ class StudyTest {
     }
 
     @Test
-    @DisplayName("스터디 만들기 \uD83D\uDE31")
-    // @DisabledOnOs(OS.MAC)
-    // @EnabledOnJre({JRE.OTHER})
-    @EnabledIfEnvironmentVariable(named = "TEST_ENV", matches = "jmlim")
+    @DisplayName("스터디 만들기 \uD83D\uDE31 slow")
+    @Tag("slow")
     void create1_new_study_again() {
         System.out.println("create1");
     }
