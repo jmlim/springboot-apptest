@@ -4,7 +4,10 @@ import org.junit.jupiter.api.*;
 
 import java.time.Duration;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumingThat;
 
 // 테스트 이름 전략 짜기
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -13,22 +16,23 @@ class StudyTest {
     @Test
     @DisplayName("스터디 만들기 \uD83D\uDE31")
     void create_new_study() {
-        // 10초안에 해당 부분이 실행이 되지 않는다면 에러를 발생 시킴.
-        assertTimeout(Duration.ofSeconds(10), () -> new Study(10));
+        // TEST_ENV 환경변수가 local 인 경우에만 통과
+        // - 주의 : 인텔리제이에서는 처음 실행 시 환경변수를 로드한걸 사용하므로 만약 환경변수가 변경되었다면 재시작을 해야 정상적으로 읽어온다.
+        String testEnv = System.getenv("TEST_ENV");
+        System.out.println(testEnv);
+        // assumeTrue("LOCAL".equalsIgnoreCase(testEnv));
 
-        // 0.1초안에 해당 부분이 실행 되지 않는다면 에러를 발생 시킴 (아래는 실패할 것임)
-        assertTimeout(Duration.ofMillis(100), () -> {
-            new Study(10);
-            Thread.sleep(300);
+        assumingThat("LOCAL".equalsIgnoreCase(testEnv), () -> {
+            System.out.println("local");
+            Study actual = new Study(10);
+            assertThat(actual.getLimit()).isGreaterThan(0);
         });
 
-        // 아래 메소드 사용 시 더이상 기다리지 않음
-        // 주의해서 사용. 코드별로를 별도의 쓰레드에서 사용하므로..
-        assertTimeoutPreemptively(Duration.ofMillis(100), () -> {
-            new Study(10);
-            Thread.sleep(300);
+        assumingThat("jmlim".equalsIgnoreCase(testEnv), () -> {
+            System.out.println("jmlim");
+            Study actual = new Study(10);
+            assertThat(actual.getLimit()).isGreaterThan(0);
         });
-        // TODO ThreadLocal
     }
 
     @Test
