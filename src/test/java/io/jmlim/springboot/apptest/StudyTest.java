@@ -34,6 +34,7 @@ class StudyTest {
     @Order(1)
     @SlowTest
     @DisplayName("스터디 만들기 \uD83D\uDE31 slow")
+    @Disabled // junit-platform.properties 파일에 junit.jupiter.conditions.deactivate = org.junit.*DisabledCondition 설정되어있어 무시됨
     void create1_new_study_again() {
         System.out.println(this);
         System.out.println(++value);
