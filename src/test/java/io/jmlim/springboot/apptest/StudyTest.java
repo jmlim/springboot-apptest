@@ -4,10 +4,13 @@ import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+// 테스트 이름 전략 짜기
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class StudyTest {
 
     @Test
-    void create() {
+    @DisplayName("스터디 만들기 \uD83D\uDE31")
+    void create_new_study() {
         Study study = new Study();
         assertNotNull(study);
         System.out.println("create");
@@ -15,8 +18,7 @@ class StudyTest {
 
     // 테스트를 실행하지 않기 위함.
     @Test
-    @Disabled
-    void create1() {
+    void create1_new_study_again() {
         System.out.println("create1");
     }
 
