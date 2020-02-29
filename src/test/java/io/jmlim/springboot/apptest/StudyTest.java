@@ -10,9 +10,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 class StudyTest {
 
     @Test
-    @DisplayName("스터디 만들기 \uD83D\uDE31 (윈도우, 리눅스 실행)")
+    @DisplayName("스터디 만들기 \uD83D\uDE31")
     // @EnabledOnOs({OS.WINDOWS, OS.LINUX})
-    @EnabledOnJre({JRE.JAVA_8, JRE.JAVA_9, JRE.JAVA_10, JRE.JAVA_11})
+    // @EnabledOnJre({JRE.JAVA_8, JRE.JAVA_9, JRE.JAVA_10, JRE.JAVA_11})
+    @EnabledIfEnvironmentVariable(named = "TEST_ENV", matches = "local") // 대소문자 구분
     void create_new_study() {
         Study actual = new Study(100);
         assertThat(actual.getLimit()).isGreaterThan(0);
@@ -20,9 +21,10 @@ class StudyTest {
     }
 
     @Test
-    @DisplayName("스터디 만들기 \uD83D\uDE31 (MAC은 실행안함)")
-    @DisabledOnOs(OS.MAC)
-    @EnabledOnJre({JRE.OTHER})
+    @DisplayName("스터디 만들기 \uD83D\uDE31")
+    // @DisabledOnOs(OS.MAC)
+    // @EnabledOnJre({JRE.OTHER})
+    @EnabledIfEnvironmentVariable(named = "TEST_ENV", matches = "jmlim")
     void create1_new_study_again() {
         System.out.println("create1");
     }
