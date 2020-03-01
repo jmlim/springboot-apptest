@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 /**
  * 의존하고 있는 클래스에 대한 구현체는 없고 인터페이스만 있음.
  * Mocking 을 할수밖에 없는 구조.
- *  - 구현체가 준비가 안되어있거나 준비가 되어 있더라도 난 StudyService만 테스트 하고 싶다 할 때 사용.
+ * - 구현체가 준비가 안되어있거나 준비가 되어 있더라도 난 StudyService만 테스트 하고 싶다 할 때 사용.
  */
 @ExtendWith(MockitoExtension.class)
 class StudyServiceTest {
@@ -33,24 +33,19 @@ class StudyServiceTest {
         member.setId(1L);
         member.setEmail("hackerljm@gmail.com");
 
-        // any()로 할경우 어떤 값을 던지더라도 위에서 만든 member 객체가 리턴
-        when(memberService.findById(any())).thenReturn(Optional.of(member));
+        when(memberService.findById(any()))
+                .thenReturn(Optional.of(member)) // 첫번째엔 정상리턴
+                .thenThrow(new RuntimeException()) // 두번째엔 런타임예외
+                .thenReturn(Optional.empty()); //세번째 호출땐 비어있는게 나오도록 stubbing
 
-        assertEquals("hackerljm@gmail.com", memberService.findById(1L).get().getEmail());
-        assertEquals("hackerljm@gmail.com", memberService.findById(2L).get().getEmail());
-        assertEquals("hackerljm@gmail.com", memberService.findById(3L).get().getEmail());
+        // 위 stubbing 에 대해 전부 대응되도록 테스트
+        Optional<Member> byId = memberService.findById(1L);
+        assertEquals("hackerljm@gmail.com", byId.get().getEmail());
 
-        // 1이라는 값을 던질경우 Throw 리턴
-        // when(memberService.findById(1L)).thenThrow(new RuntimeException());
-
-        // member메소드 중 validate 메소드가 1L 이라는 값을 던질경우 IllegalArgumentException 예외를 던짐.
-        doThrow(new IllegalArgumentException()).when(memberService).validate(1L);
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            memberService.validate(1L);
+        assertThrows(RuntimeException.class, () -> {
+            memberService.findById(99L);
         });
 
-        memberService.validate(2L);
-
+        assertEquals(Optional.empty(), memberService.findById(1L));
     }
 }
