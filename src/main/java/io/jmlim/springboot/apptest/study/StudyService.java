@@ -19,8 +19,11 @@ public class StudyService {
     public Study createNewStudy(Long memberId, Study study) {
         Member member = memberService.findById(memberId).orElseThrow(() ->
                 new IllegalArgumentException("Member doesn't exist for id: '" + memberId + "'"));
-
         study.setOwner(member);
-        return repository.save(study);
+        Study newStudy = repository.save(study);
+        // member service 한테 새로운 스터다가 나왔다고 알려주는것을 가정함.
+        memberService.notify(newStudy);
+        memberService.notify(member);
+        return newStudy;
     }
 }

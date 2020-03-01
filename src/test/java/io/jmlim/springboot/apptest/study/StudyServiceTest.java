@@ -5,15 +5,15 @@ import io.jmlim.springboot.apptest.domain.Study;
 import io.jmlim.springboot.apptest.member.MemberService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
 
 /**
  * 의존하고 있는 클래스에 대한 구현체는 없고 인터페이스만 있음.
@@ -43,5 +43,17 @@ class StudyServiceTest {
 
         studyService.createNewStudy(1L, study);
         assertEquals(member, study.getOwner());
+
+        // 딱 한번 notify 가 createNewStudy 실행 시 실행이 되었어야 한다라는 stubbing 지정
+        // 안했으면 에러가 남. (실제 createNewStudy 에서 notify 주석처리하면 에러 확인 가능.
+        verify(memberService, times(1)).notify(study);
+        verify(memberService, times(1)).notify(member);
+        // 아래 코드 작성 시 validate 는 전혀 호출이 되지 않아야함.
+        verify(memberService, never()).validate(any());
+
+        // 순서대로 실행되지 않으면 에러
+        InOrder inOrder = inOrder(memberService);
+        inOrder.verify(memberService).notify(study);
+        inOrder.verify(memberService).notify(member);
     }
 }
