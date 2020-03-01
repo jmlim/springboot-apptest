@@ -3,14 +3,20 @@ package io.jmlim.springboot.apptest.study;
 import io.jmlim.springboot.apptest.domain.Member;
 import io.jmlim.springboot.apptest.domain.Study;
 import io.jmlim.springboot.apptest.member.MemberService;
-import org.junit.jupiter.api.*;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -21,6 +27,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
+@Slf4j
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -33,12 +40,30 @@ class StudyServiceTest {
     StudyRepository studyRepository;
 
     @Container
+    static GenericContainer postgreSQLContainer = new GenericContainer("postgres")
+            .withExposedPorts(5432) // 내부포트
+            .withEnv("POSTGRES_DB", "studytest")// 환경변수 설정
+            .waitingFor(Wait.forListeningPort());
+    //.waitingFor(Wait.forHttp("/hello"))
+    //.waitingFor(Wait.forLogMessage())
+
+    @BeforeAll
+    static void beforeAll() {
+        Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(log);
+        postgreSQLContainer.followOutput(logConsumer);
+    }
+
+    /*    @Container
     static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer()
-            .withDatabaseName("studytest");
+            .withDatabaseName("studytest");*/
 
     // 테스트 컨테이너 안의 데이터가 쌓이는 것을 방지
     @BeforeEach
     void beforeEach() {
+        System.out.println("=================================");
+        System.out.println(postgreSQLContainer.getMappedPort(5432));
+        // System.out.println(postgreSQLContainer.getLogs()); //컨테이너 모든 로그 보기.
+
         studyRepository.deleteAll();
     }
 
