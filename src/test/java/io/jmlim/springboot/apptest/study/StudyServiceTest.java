@@ -48,18 +48,14 @@ class StudyServiceTest {
             .withEnv("POSTGRES_DB", "studytest")
             .withEnv("POSTGRES_PASSWORD", "studytest"); // 환경변수 설정
             // .waitingFor(Wait.forListeningPort());
-    //.waitingFor(Wait.forHttp("/hello"))
-    //.waitingFor(Wait.forLogMessage())
+            //.waitingFor(Wait.forHttp("/hello"))
+            //.waitingFor(Wait.forLogMessage())
 
     @BeforeAll
     static void beforeAll() {
        Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LOGGER);
        postgreSQLContainer.followOutput(logConsumer);
     }
-
-    /*    @Container
-    static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer()
-            .withDatabaseName("studytest");*/
 
     // 테스트 컨테이너 안의 데이터가 쌓이는 것을 방지
     @BeforeEach
@@ -70,23 +66,6 @@ class StudyServiceTest {
 
         studyRepository.deleteAll();
     }
-
-
-    // 모든 테스트마다 컨테이너를 새로 만든다.
-    //  PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer();
-    // 스태틱으로 할 경우 모든 테스트마다 컨테이너를 새로 만들지 않고 공유해서 사용 가능하다.
-/*    static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer()
-            .withDatabaseName("studytest");*/
-/*    @BeforeAll
-    static void beforeAll() {
-        postgreSQLContainer.start();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        postgreSQLContainer.stop();
-    }*/
-
 
     @Test
     void createNewStudy() {
