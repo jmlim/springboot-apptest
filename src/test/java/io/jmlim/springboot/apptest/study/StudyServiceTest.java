@@ -18,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.containers.GenericContainer;
@@ -121,12 +120,12 @@ class StudyServiceTest {
         /**
          * Initialize the given application context.
          *
-         * @param applicationContext the application to configure
+         * @param context the application to configure
          */
         @Override
-        public void initialize(ConfigurableApplicationContext applicationContext) {
+        public void initialize(ConfigurableApplicationContext context) {
             TestPropertyValues.of("container.port=" + postgreSQLContainer.getMappedPort(5432))
-                    .applyTo(applicationContext.getEnvironment());
+                    .applyTo(context.getEnvironment());
         }
     }
 }
