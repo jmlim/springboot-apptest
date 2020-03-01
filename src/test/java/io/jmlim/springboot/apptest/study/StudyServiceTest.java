@@ -45,15 +45,16 @@ class StudyServiceTest {
     @Container
     static GenericContainer postgreSQLContainer = new GenericContainer("postgres")
             .withExposedPorts(5432) // 내부포트
-            .withEnv("POSTGRES_DB", "studytest")// 환경변수 설정
-            .waitingFor(Wait.forListeningPort());
+            .withEnv("POSTGRES_DB", "studytest")
+            .withEnv("POSTGRES_PASSWORD", "studytest"); // 환경변수 설정
+            // .waitingFor(Wait.forListeningPort());
     //.waitingFor(Wait.forHttp("/hello"))
     //.waitingFor(Wait.forLogMessage())
 
     @BeforeAll
     static void beforeAll() {
-        Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LOGGER);
-        postgreSQLContainer.followOutput(logConsumer);
+       Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LOGGER);
+       postgreSQLContainer.followOutput(logConsumer);
     }
 
     /*    @Container
