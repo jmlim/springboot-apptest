@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
@@ -47,8 +48,11 @@ class StudyServiceTest {
     @Autowired
     StudyRepository studyRepository;
 
-    @Autowired
-    Environment environment;
+    /*    @Autowired
+        Environment environment;*/
+    @Value("${container.port}")
+    int port;
+
 
     @Container
     static GenericContainer postgreSQLContainer = new GenericContainer("postgres")
@@ -69,7 +73,7 @@ class StudyServiceTest {
     @BeforeEach
     void beforeEach() {
         System.out.println("=================================");
-        System.out.println(environment.getProperty("container.port"));
+        System.out.println(port);
         studyRepository.deleteAll();
     }
 
