@@ -3,14 +3,16 @@ package io.jmlim.springboot.apptest.study;
 import io.jmlim.springboot.apptest.domain.Member;
 import io.jmlim.springboot.apptest.domain.Study;
 import io.jmlim.springboot.apptest.member.MemberService;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -27,12 +29,13 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
-@Slf4j
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
 @Testcontainers
 class StudyServiceTest {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(StudyServiceTest.class);
 
     @Mock
     MemberService memberService;
@@ -49,7 +52,7 @@ class StudyServiceTest {
 
     @BeforeAll
     static void beforeAll() {
-        Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(log);
+        Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LOGGER);
         postgreSQLContainer.followOutput(logConsumer);
     }
 
