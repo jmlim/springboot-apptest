@@ -3,9 +3,9 @@ package io.jmlim.springboot.apptest.study;
 import io.jmlim.springboot.apptest.domain.Member;
 import io.jmlim.springboot.apptest.domain.Study;
 import io.jmlim.springboot.apptest.member.MemberService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -13,7 +13,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 /**
  * 의존하고 있는 클래스에 대한 구현체는 없고 인터페이스만 있음.
@@ -27,6 +29,7 @@ class StudyServiceTest {
     void createStudyService(@Mock MemberService memberService,
                             @Mock StudyRepository studyRepository) {
 
+        // Given
         StudyService studyService = new StudyService(memberService, studyRepository);
         assertNotNull(studyService);
 
@@ -34,18 +37,28 @@ class StudyServiceTest {
         member.setId(1L);
         member.setEmail("hackerljm@gmail.com");
 
-        // memberService 객체에 findById 메소드를 1L 값으로 호출하면 Optional.of(member) 객체를 리턴하도록 Stubbing
-        when(memberService.findById(1L)).thenReturn(Optional.of(member));
-        // studyRepository 객체에 save 메소드를 study 객체로 호출하면 study 객체 그대로 리턴하도록 Stubbing
         Study study = new Study(10, "테스트");
-        when(studyRepository.save(study)).thenReturn(study);
+        // memberService 객체에 findById 메소드를 1L 값으로 호출하면 Optional.of(member) 객체를 리턴하도록 Stubbing
+        // when(memberService.findById(1L)).thenReturn(Optional.of(member));
+        // studyRepository 객체에 save 메소드를 study 객체로 호출하면 study 객체 그대로 리턴하도록 Stubbing
+        // when(studyRepository.save(study)).thenReturn(study);
 
+        // 위 코드를 bdd 스타일로 작성.
+        given(memberService.findById(1L)).willReturn(Optional.of(member));
+        given(studyRepository.save(study)).willReturn(study);
+
+        // Whrn
         studyService.createNewStudy(1L, study);
-        assertEquals(member, study.getOwner());
 
-        verify(memberService, times(1)).notify(study);
+        // Then
+        assertEquals(member, study.getOwner());
+       // verify(memberService, times(1)).notify(study);
+        // 위 코드를 bdd 스타일로 작성.
+        then(memberService).should(times(1)).notify(study);
         // memberService.notify(스터디) 실행 이후에 memberService의 notify(멤버); 를 한번 더 실행하므로 에러.
         // 아래 코드는 스터디 이후 더이항 실행되지 않기를 원하고 짠 테스트
-        verifyNoMoreInteractions(memberService);
+        // verifyNoMoreInteractions(memberService);
+        // 위코드를 bdd 스타일로 작성.
+        then(memberService).shouldHaveNoMoreInteractions();
     }
 }
