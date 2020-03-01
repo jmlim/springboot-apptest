@@ -1,6 +1,7 @@
 package io.jmlim.springboot.apptest.study;
 
 import io.jmlim.springboot.apptest.domain.Member;
+import io.jmlim.springboot.apptest.domain.Study;
 import io.jmlim.springboot.apptest.member.MemberService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,19 +34,14 @@ class StudyServiceTest {
         member.setId(1L);
         member.setEmail("hackerljm@gmail.com");
 
-        when(memberService.findById(any()))
-                .thenReturn(Optional.of(member)) // 첫번째엔 정상리턴
-                .thenThrow(new RuntimeException()) // 두번째엔 런타임예외
-                .thenReturn(Optional.empty()); //세번째 호출땐 비어있는게 나오도록 stubbing
+        // memberService 객체에 findById 메소드를 1L 값으로 호출하면 Optional.of(member) 객체를 리턴하도록 Stubbing
+        when(memberService.findById(1L)).thenReturn(Optional.of(member));
 
-        // 위 stubbing 에 대해 전부 대응되도록 테스트
-        Optional<Member> byId = memberService.findById(1L);
-        assertEquals("hackerljm@gmail.com", byId.get().getEmail());
+        // studyRepository 객체에 save 메소드를 study 객체로 호출하면 study 객체 그대로 리턴하도록 Stubbing
+        Study study = new Study(10, "테스트");
+        when(studyRepository.save(study)).thenReturn(study);
 
-        assertThrows(RuntimeException.class, () -> {
-            memberService.findById(99L);
-        });
-
-        assertEquals(Optional.empty(), memberService.findById(1L));
+        studyService.createNewStudy(1L, study);
+        assertEquals(member, study.getOwner());
     }
 }
